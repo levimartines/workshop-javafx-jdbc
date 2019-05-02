@@ -3,6 +3,7 @@ package gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import application.Main;
 import gui.util.Alerts;
@@ -32,18 +33,21 @@ public class MainViewController implements Initializable{
 	}
 	@FXML
 	public void onMenuItemDepartmentAction() {
-		LoadView("/gui/DepartmentList.fxml");
+		LoadView("/gui/DepartmentList.fxml", (DepartmentListController controller) -> {
+			controller.setDepartmentService(new DepartmentService());
+			controller.updateTableView();
+		});
 	}
 	@FXML
 	public void onMenuItemAboutAction() {
-		LoadView("/gui/About.fxml");
+		LoadView("/gui/About.fxml", x -> {});
 	}
 	                                    
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {	
 	}
 	
-	public synchronized void LoadView(String absoluteName) {
+	public synchronized <T> void LoadView(String absoluteName, Consumer<T> initializingAction) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			VBox newVBox = loader.load();
@@ -59,10 +63,8 @@ public class MainViewController implements Initializable{
 			mainVBox.getChildren().addAll(newVBox.getChildren());
 			
 			//
-			DepartmentListController controller = loader.getController();
-			controller.setDepartmentService(new DepartmentService());
-			controller.updateTableView();
-			//
+			T controller = loader.getController();
+			initializingAction.accept(controller);
 		}
 		catch (IOException e) {
 			Alerts.showAlert("IOException", "Error loading view", e.getMessage(), AlertType.ERROR);
