@@ -79,7 +79,7 @@ public class DepartmentFormController implements Initializable {
 		} catch (ValidationException e) {
 			setErrorMessages(e.getErrors());
 		}
-		
+
 	}
 
 	private void notifyDataChangeListeners() {
@@ -98,7 +98,7 @@ public class DepartmentFormController implements Initializable {
 			exception.addError("name", "Name can't be empyt");
 		}
 		obj.setName(txtName.getText());
-		if (exception.getErrors().size()>0) {
+		if (exception.getErrors().size() > 0) {
 			throw exception;
 		}
 		return obj;
@@ -125,11 +125,11 @@ public class DepartmentFormController implements Initializable {
 		txtId.setText(String.valueOf(entity.getId()));
 		txtName.setText(entity.getName());
 	}
-	
+
 	public void setErrorMessages(Map<String, String> errors) {
 		Set<String> fields = errors.keySet();
-		if(fields.contains("name")) {
+		if (fields.contains("name")) {
 			labelErrorName.setText(errors.get("name"));
-		}	
+		}
 	}
 }
